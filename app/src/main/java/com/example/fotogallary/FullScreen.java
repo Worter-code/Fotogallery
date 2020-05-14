@@ -133,6 +133,9 @@ public class FullScreen extends FragmentActivity {
                         new File(fileList.get((int) getIntent().getSerializableExtra(
                                 "position"))).delete();
                         fileList.remove((int) getIntent().getSerializableExtra("position"));
+                        
+                        Intent intent = new Intent(FullScreen.this, MainActivity.class);
+                        startActivity(intent);
                     }
                 });
                 deleteDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
