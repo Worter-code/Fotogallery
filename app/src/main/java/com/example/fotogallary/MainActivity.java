@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
         for (File file : files) {
             final String path = file.getAbsolutePath();
-            if (path.endsWith(".jpg") || path.endsWith(".jpg") || path.endsWith(".jpg") || path.endsWith(".mp4"))
+            if (path.endsWith(".jpg") || path.endsWith(".png") || path.endsWith(".jpeg") ||
+                    path.endsWith(".bmp") || path.endsWith(".jp2") || path.endsWith(".raw"))
                 fileList.add(path);
         }
     }
