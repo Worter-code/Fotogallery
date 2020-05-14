@@ -54,8 +54,70 @@ public class FullScreen extends FragmentActivity {
         pager.setCurrentItem((int) getIntent().getSerializableExtra("position"));
 
 
-        //////////////СЛУШАТЕЛИ ДЛЯ КНОПОК В ТУЛБАРЕ///////////////////
+        PutDeleteButton();
+        PutInfoButton();
+        PutShareButton();
 
+    }
+
+    //////////////СЛУШАТЕЛИ ДЛЯ КНОПОК В ТУЛБАРЕ///////////////////
+
+    //показать информацию
+    public void PutInfoButton(){
+        final ImageButton infoButton = findViewById(R.id.infoButton);
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder showInfoDialog = new AlertDialog.Builder(FullScreen
+                        .this);
+                showInfoDialog.setTitle("Image Info");
+                final File imageFile = new File(fileList.get((int) getIntent()
+                        .getSerializableExtra("position")));
+                final Date lastModDate = new Date(imageFile.lastModified());
+                final long fileLenght = imageFile.length()/1024;
+                String fileLenghtString;
+                if (fileLenght > 1024)
+                    fileLenghtString = String.valueOf(fileLenght/1024) + " MB";
+                else
+                    fileLenghtString = String.valueOf(fileLenght) + " KB";
+                String info = "Location: " + fileList.get((int) getIntent().getSerializableExtra(
+                        "position")) + "\n\n" +
+                        "Last Modified: " + lastModDate.toString() + "\n\n" +
+                        "Image Size: " + fileLenghtString;
+                ;
+                showInfoDialog.setMessage(info);
+                showInfoDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                showInfoDialog.show();
+            }
+        });
+    }
+
+    public void PutShareButton(){
+        //переслать изображение
+        final ImageButton shareButton = findViewById(R.id.shareButton);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String filePath = fileList.get((int) getIntent().getSerializableExtra(
+                        "position"));
+                final Uri imageUri = Uri.parse("file://" + filePath);
+                final Intent intent = new Intent(Intent.ACTION_SEND);
+                if (filePath.endsWith(".png"))
+                    intent.setType("image/png");
+                else
+                    intent.setType("image/jpeg");
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+                startActivity(Intent.createChooser(intent, "Share"));
+            }
+        });
+    }
+    public void PutDeleteButton(){
         //удаление изображения
         final ImageButton deleteButton = findViewById(R.id.deleteButton);
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -82,59 +144,6 @@ public class FullScreen extends FragmentActivity {
                 deleteDialog.show();
             }
         });
-
-        //переслать изображение
-        final ImageButton shareButton = findViewById(R.id.shareButton);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String filePath = fileList.get((int) getIntent().getSerializableExtra(
-                        "position"));
-                final Uri imageUri = Uri.parse("file://" + filePath);
-                final Intent intent = new Intent(Intent.ACTION_SEND);
-                if (filePath.endsWith(".png"))
-                    intent.setType("image/png");
-                else
-                    intent.setType("image/jpeg");
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-                startActivity(Intent.createChooser(intent, "Share"));
-            }
-        });
-        //показать информацию
-        final ImageButton infoButton = findViewById(R.id.infoButton);
-        infoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder showInfoDialog = new AlertDialog.Builder(FullScreen
-                        .this);
-                showInfoDialog.setTitle("Image Info");
-                final File imageFile = new File(fileList.get((int) getIntent()
-                        .getSerializableExtra("position")));
-                final Date lastModDate = new Date(imageFile.lastModified());
-                final long fileLenght = imageFile.length()/1024;
-                String fileLenghtString;
-                if (fileLenght > 1024)
-                    fileLenghtString = String.valueOf(fileLenght/1024) + " MB";
-                else
-                    fileLenghtString = String.valueOf(fileLenght) + " KB";
-                String info = "Location: " + fileList.get((int) getIntent().getSerializableExtra(
-                        "position")) + "\n\n" +
-                        "Last Modified: " + lastModDate.toString() + "\n\n" +
-                        "Image Size: " + fileLenghtString;
-                        ;
-                showInfoDialog.setMessage(info);
-                showInfoDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                showInfoDialog.show();
-            }
-        });
-
-
     }
     ///////////////////////////////////////////////////////////
 
